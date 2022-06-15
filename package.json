@@ -3,5 +3,21 @@
   "version": "1.0.0",
   "main": "index.js",
   "author": "Egorius1979 <Egoriyvelikolepny1979@gmail.com>",
-  "license": "MIT"
+  "license": "MIT",
+  "scripts": {
+    "start": "node index.ts",
+    "start:dev": "nodemon src/index.ts",
+    "start:prod": ""
+  },
+  "dependencies": {
+    "dotenv": "^16.0.1",
+    "uuid": "^8.3.2"
+  },
+  "devDependencies": {
+    "@types/node": "^17.0.42",
+    "@types/uuid": "^8.3.4",
+    "nodemon": "^2.0.16",
+    "ts-node": "^10.8.1",
+    "typescript": "^4.7.3"
+  }
 }
