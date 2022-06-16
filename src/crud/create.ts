@@ -2,6 +2,7 @@ import { read, write } from './db/readWriteDb';
 import { contType } from '../index';
 import { IReq, IRes } from './read';
 import { createUser } from './utils/user';
+import { serverError } from '../index';
 
 const addUser = async (req: IReq, res: IRes) => {
   try {
@@ -16,7 +17,6 @@ const addUser = async (req: IReq, res: IRes) => {
       if (typeof result !== 'string') {
         const usersArray = await read('');
         await write(JSON.stringify([...usersArray, result]));
-
         res.writeHead(201, contType);
         res.end(JSON.stringify(result));
       } else {
@@ -24,8 +24,9 @@ const addUser = async (req: IReq, res: IRes) => {
         res.end(result);
       }
     });
-  } catch (e) {
-    console.error(e);
+  } catch {
+    res.writeHead(500);
+    res.end(serverError);
   }
 };
 

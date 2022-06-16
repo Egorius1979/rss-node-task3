@@ -1,8 +1,9 @@
 import { IncomingMessage, ServerResponse } from 'http';
-import { validate } from 'uuid';
 import { contType } from '../index';
 import { read } from './db/readWriteDb';
 import { getUserId } from './utils/userId';
+import { serverError } from '../index';
+import { findUser } from './utils/findUser';
 
 export type IReq = IncomingMessage;
 export type IRes = ServerResponse;
@@ -26,23 +27,14 @@ async function getAllUsers(req: IReq, res: IRes) {
 
 async function getUser(req: IReq, res: IRes) {
   const userId = getUserId(req.url);
+  const user = await findUser(userId, res);
 
   try {
-    if (validate(userId)) {
-      const user = await read(userId);
-      if (user) {
-        res.writeHead(200, contType);
-        res.end(JSON.stringify(user));
-      } else {
-        res.writeHead(404);
-        res.end('no such record');
-      }
-    } else {
-      res.writeHead(400);
-      res.end('not a uuid');
-    }
-  } catch (e) {
-    console.error(e);
+    res.writeHead(200, contType);
+    res.end(JSON.stringify(user));
+  } catch {
+    res.writeHead(500);
+    res.end(serverError);
   }
 }
 

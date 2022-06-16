@@ -9,6 +9,9 @@ export interface IUser {
 }
 
 export async function createUser(body: string) {
+  if (!body) {
+    return 'the body is empty';
+  }
   const { username, age, hobbies } = JSON.parse(body);
 
   if (username && age && hobbies) {

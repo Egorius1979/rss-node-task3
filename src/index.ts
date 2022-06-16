@@ -6,6 +6,8 @@ import updateUser from './crud/update';
 import deleteUser from './crud/delete';
 
 export const contType = { 'Content-Type': 'application/json' };
+export const serverError = 'sorry, server error, try later';
+
 const PORT = process.env.PORT || 8090;
 
 const server = createServer((req, res) => {
