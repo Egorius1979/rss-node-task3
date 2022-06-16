@@ -1,1 +1,46 @@
-[{"id":"d3149c20-507b-468b-bd2c-19b17f343a0e","username":"Vasya","age":23,"hobbies":[]},{"id":"4ebae37d-18a9-40e1-94be-ba128997eed5","username":"Vasya","age":23,"hobbies":[]},{"id":"d13aa40f-055f-4c67-8fd3-933e0eddceef","username":"Egor","age":43,"hobbies":["reading","sci-fi"]}]
+[
+  {
+    "id": "d3149c20-507b-468b-bd2c-19b17f343a0e",
+    "username": "Vasya123",
+    "age": 23,
+    "hobbies": [
+      "games",
+      1,
+      "1",
+      "1"
+    ]
+  },
+  {
+    "id": "4ebae37d-18a9-40e1-94be-ba128997eed5",
+    "username": "Vasya456",
+    "age": 230,
+    "hobbies": []
+  },
+  {
+    "id": "d13aa40f-055f-4c67-8fd3-933e0eddceef",
+    "username": "Egor",
+    "age": 43,
+    "hobbies": [
+      "reading",
+      "sci-fi"
+    ]
+  },
+  {
+    "id": "0e7257bd-1896-448c-b4b5-24d7e223774c",
+    "username": "Masha",
+    "age": 34,
+    "hobbies": [
+      "cats",
+      "cooking"
+    ]
+  },
+  {
+    "id": "0e44a057-28d2-44c8-aedf-4ad5d5d2b63a",
+    "username": "Misha",
+    "age": 45,
+    "hobbies": [
+      "vodka",
+      "beer"
+    ]
+  }
+]
