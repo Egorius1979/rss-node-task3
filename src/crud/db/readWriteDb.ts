@@ -1,6 +1,6 @@
 import { dirname, resolve } from 'path';
 import { readFile, writeFile } from 'fs/promises';
-import { IUser } from '../create';
+import { IUser } from '../utils/user';
 
 const dbPath = resolve(dirname(process.argv[1]), './crud/db', 'users.json');
 

@@ -2,6 +2,7 @@ import { IncomingMessage, ServerResponse } from 'http';
 import { validate } from 'uuid';
 import { contType } from '../index';
 import { read } from './db/readWriteDb';
+import { getUserId } from './utils/userId';
 
 export type IReq = IncomingMessage;
 export type IRes = ServerResponse;
@@ -24,25 +25,20 @@ async function getAllUsers(req: IReq, res: IRes) {
 }
 
 async function getUser(req: IReq, res: IRes) {
-  const reqArr = req.url?.split('/').filter((it) => it);
-  const userId = reqArr[2];
+  const userId = getUserId(req.url);
 
   try {
-    if (
-      req.url.startsWith('/api/users/') &&
-      reqArr?.length === 3 &&
-      validate(userId)
-    ) {
+    if (validate(userId)) {
       const user = await read(userId);
       if (user) {
         res.writeHead(200, contType);
         res.end(JSON.stringify(user));
       } else {
-        res.writeHead(404, contType);
+        res.writeHead(404);
         res.end('no such record');
       }
     } else {
-      res.writeHead(400, contType);
+      res.writeHead(400);
       res.end('not a uuid');
     }
   } catch (e) {

@@ -1,42 +1,29 @@
-import { v4 as uuid } from 'uuid';
 import { read, write } from './db/readWriteDb';
 import { contType } from '../index';
 import { IReq, IRes } from './read';
-
-export interface IUser {
-  id: string;
-  username: string;
-  age: number;
-  hobbies: string[] | [];
-}
+import { createUser } from './utils/user';
 
 const addUser = async (req: IReq, res: IRes) => {
   try {
-    if (req.url === '/api/users') {
-      let body: string = '';
+    let body: string = '';
 
-      req.on('data', (chunk) => {
-        body += String(chunk);
-      });
-      req.on('end', async () => {
-        const { username, age, hobbies } = JSON.parse(body);
+    req.on('data', (chunk) => {
+      body += String(chunk);
+    });
+    req.on('end', async () => {
+      const result = await createUser(body);
 
-        if (username && age && hobbies) {
-          const user: IUser = { id: uuid(), username, age, hobbies };
-          const usersArray = await read('');
-          await write(JSON.stringify([...usersArray, user]));
+      if (typeof result !== 'string') {
+        const usersArray = await read('');
+        await write(JSON.stringify([...usersArray, result]));
 
-          res.writeHead(201, contType);
-          res.end(JSON.stringify(user));
-        } else {
-          res.writeHead(400, contType);
-          res.end('required properties are not specified');
-        }
-      });
-    } else {
-      res.writeHead(400, contType);
-      res.end('Неверный путь');
-    }
+        res.writeHead(201, contType);
+        res.end(JSON.stringify(result));
+      } else {
+        res.writeHead(400);
+        res.end(result);
+      }
+    });
   } catch (e) {
     console.error(e);
   }
