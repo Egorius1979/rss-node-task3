@@ -27,11 +27,11 @@ export async function createUser(body: string, res: IRes) {
         const user: IUser = { id: uuid(), username, age, hobbies };
         return user;
       }
-      return 'wrong properties types';
+      return 'invalid properties types';
     }
     return 'required properties are not specified';
   } catch {
-    res.writeHead(400, contType);
+    res.writeHead(500, contType);
     res.end(setError('invalid JSON'));
   }
 }
@@ -62,7 +62,7 @@ export async function setUpdatedUser(body: string, user: IUser, res: IRes) {
     };
     return updatedUser;
   } catch {
-    res.writeHead(400, contType);
+    res.writeHead(500, contType);
     res.end(setError('invalid JSON'));
   }
 }

@@ -28,10 +28,9 @@ async function getAllUsers(req: IReq, res: IRes) {
 }
 
 async function getUser(req: IReq, res: IRes) {
-  const userId = getUserId(req.url);
-  const user = await findUser(userId, res);
-
   try {
+    const userId = getUserId(req.url);
+    const user = await findUser(userId, res);
     res.writeHead(200, contType);
     res.end(setResponse(user));
   } catch {

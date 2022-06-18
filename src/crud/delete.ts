@@ -8,11 +8,11 @@ import { setError } from './utils/response';
 import { contType } from '../index';
 
 const deleteUser = async (req: IReq, res: IRes) => {
-  const userId = getUserId(req.url);
-  const user: IUser = await findUser(userId, res);
-  if (!user) return;
-
   try {
+    const userId = getUserId(req.url);
+    const user: IUser = await findUser(userId, res);
+    if (!user) return;
+
     let usersArray: IUser[] = await read('', res);
     usersArray = usersArray.filter((user) => user.id !== userId);
     await write(JSON.stringify(usersArray), res);

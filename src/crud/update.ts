@@ -9,11 +9,11 @@ import { findUser } from './utils/findUser';
 import { setError, setResponse } from './utils/response';
 
 export const updateUser = async (req: IReq, res: IRes) => {
-  const userId = getUserId(req.url);
-  const user: IUser = await findUser(userId, res);
-  if (!user) return;
-
   try {
+    const userId = getUserId(req.url);
+    const user: IUser = await findUser(userId, res);
+    if (!user) return;
+
     let body: string = '';
     req.on('data', (chunk) => {
       body += String(chunk);
