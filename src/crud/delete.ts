@@ -4,6 +4,8 @@ import { read, write } from './db/readWriteDb';
 import { getUserId } from './utils/userId';
 import { serverError } from '../index';
 import { findUser } from './utils/findUser';
+import { setError } from './utils/response';
+import { contType } from '../index';
 
 const deleteUser = async (req: IReq, res: IRes) => {
   const userId = getUserId(req.url);
@@ -11,14 +13,14 @@ const deleteUser = async (req: IReq, res: IRes) => {
   if (!user) return;
 
   try {
-    let usersArray: IUser[] = await read('');
+    let usersArray: IUser[] = await read('', res);
     usersArray = usersArray.filter((user) => user.id !== userId);
-    await write(JSON.stringify(usersArray));
+    await write(JSON.stringify(usersArray), res);
     res.writeHead(204);
     res.end();
   } catch {
-    res.writeHead(500);
-    res.end(serverError);
+    res.writeHead(500, contType);
+    res.end(setError(serverError));
   }
 };
 

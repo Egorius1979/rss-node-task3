@@ -1,4 +1,3 @@
-// import { validate } from 'uuid';
 import { IReq, IRes } from './read';
 import { contType } from '../index';
 import { read, write } from './db/readWriteDb';
@@ -7,6 +6,7 @@ import { getUserId } from './utils/userId';
 import { setUpdatedUser } from './utils/user';
 import { serverError } from '../index';
 import { findUser } from './utils/findUser';
+import { setError, setResponse } from './utils/response';
 
 export const updateUser = async (req: IReq, res: IRes) => {
   const userId = getUserId(req.url);
@@ -20,28 +20,28 @@ export const updateUser = async (req: IReq, res: IRes) => {
     });
     req.on('end', async () => {
       if (body) {
-        const result = await setUpdatedUser(body, user);
+        const result = await setUpdatedUser(body, user, res);
 
         if (result) {
-          let usersArray: IUser[] = await read('');
+          let usersArray: IUser[] = await read('', res);
           usersArray = usersArray.map((user) =>
             user.id === userId ? result : user
           );
-          await write(JSON.stringify(usersArray));
+          await write(JSON.stringify(usersArray), res);
           res.writeHead(200, contType);
-          res.end(JSON.stringify(result));
+          res.end(setResponse(result));
         } else {
-          res.writeHead(400);
-          res.end('wrong properties types');
+          res.writeHead(400, contType);
+          res.end(setError('wrong properties types'));
         }
       } else {
-        res.writeHead(404);
-        res.end('no changes');
+        res.writeHead(404, contType);
+        res.end(setError('no changes'));
       }
     });
   } catch {
-    res.writeHead(500);
-    res.end(serverError);
+    res.writeHead(500, contType);
+    res.end(setError(serverError));
   }
 };
 

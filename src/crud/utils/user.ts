@@ -1,5 +1,7 @@
-import { arrayBuffer } from 'stream/consumers';
 import { v4 as uuid } from 'uuid';
+import { IRes } from '../read';
+import { contType } from '../../index';
+import { setError } from '../utils/response';
 
 export interface IUser {
   id: string;
@@ -8,48 +10,59 @@ export interface IUser {
   hobbies: string[] | [];
 }
 
-export async function createUser(body: string) {
-  if (!body) {
-    return 'the body is empty';
-  }
-  const { username, age, hobbies } = JSON.parse(body);
-
-  if (username && age && hobbies) {
-    if (
-      typeof username === 'string' &&
-      typeof age === 'number' &&
-      Array.isArray(hobbies) &&
-      hobbies.every((it) => typeof it === 'string')
-    ) {
-      const user: IUser = { id: uuid(), username, age, hobbies };
-      return user;
+export async function createUser(body: string, res: IRes) {
+  try {
+    if (!body) {
+      return 'body is empty';
     }
-    return 'wrong properties types';
+    const { username, age, hobbies } = JSON.parse(body);
+
+    if (username && age && hobbies) {
+      if (
+        typeof username === 'string' &&
+        typeof age === 'number' &&
+        Array.isArray(hobbies) &&
+        hobbies.every((it) => typeof it === 'string')
+      ) {
+        const user: IUser = { id: uuid(), username, age, hobbies };
+        return user;
+      }
+      return 'wrong properties types';
+    }
+    return 'required properties are not specified';
+  } catch {
+    res.writeHead(400, contType);
+    res.end(setError('invalid JSON'));
   }
-  return 'required properties are not specified';
 }
 
-export async function setUpdatedUser(body: string, user: IUser) {
-  const fromBody: IUser = JSON.parse(body);
+export async function setUpdatedUser(body: string, user: IUser, res: IRes) {
+  try {
+    const fromBody: IUser = JSON.parse(body);
 
-  if (fromBody.username && typeof fromBody.username !== 'string') return;
-  if (fromBody.age && typeof fromBody.age !== 'number') return;
-  if (fromBody.hobbies && !Array.isArray(fromBody.hobbies)) return;
-  if (
-    fromBody.hobbies &&
-    !fromBody.hobbies.every((it) => typeof it === 'string')
-  )
-    return;
+    if (fromBody.username && typeof fromBody.username !== 'string') return;
+    if (fromBody.age && typeof fromBody.age !== 'number') return;
+    if (fromBody.hobbies && !Array.isArray(fromBody.hobbies)) return;
+    if (
+      fromBody.hobbies &&
+      !fromBody.hobbies.every((it) => typeof it === 'string')
+    )
+      return;
 
-  const updatedUser = {
-    id: user.id,
-    username: fromBody.username || user.username,
-    age: fromBody.age || user.age,
-    hobbies: fromBody.hobbies?.length
-      ? [...user.hobbies, ...fromBody.hobbies].filter(
-          (hobbie, idx, arr) => idx === arr.indexOf(hobbie)
-        )
-      : user.hobbies,
-  };
-  return updatedUser;
+    const updatedUser = {
+      id: user.id,
+      username: fromBody.username || user.username,
+      age: fromBody.age || user.age,
+      hobbies: fromBody.hobbies || user.hobbies,
+      // hobbies: fromBody.hobbies?.length
+      //   ? [...user.hobbies, ...fromBody.hobbies].filter(
+      //       (hobbie, idx, arr) => idx === arr.indexOf(hobbie)
+      //     )
+      //   : user.hobbies,
+    };
+    return updatedUser;
+  } catch {
+    res.writeHead(400, contType);
+    res.end(setError('invalid JSON'));
+  }
 }

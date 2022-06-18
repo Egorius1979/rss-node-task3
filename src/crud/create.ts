@@ -3,6 +3,7 @@ import { contType } from '../index';
 import { IReq, IRes } from './read';
 import { createUser } from './utils/user';
 import { serverError } from '../index';
+import { setError, setResponse } from './utils/response';
 
 const addUser = async (req: IReq, res: IRes) => {
   try {
@@ -12,21 +13,22 @@ const addUser = async (req: IReq, res: IRes) => {
       body += String(chunk);
     });
     req.on('end', async () => {
-      const result = await createUser(body);
+      const result = await createUser(body, res);
+      if (!result) return;
 
       if (typeof result !== 'string') {
-        const usersArray = await read('');
-        await write(JSON.stringify([...usersArray, result]));
+        const usersArray = await read('', res);
+        await write(JSON.stringify([...usersArray, result]), res);
         res.writeHead(201, contType);
-        res.end(JSON.stringify(result));
+        res.end(setResponse(result));
       } else {
-        res.writeHead(400);
-        res.end(result);
+        res.writeHead(400, contType);
+        res.end(setError(result));
       }
     });
   } catch {
-    res.writeHead(500);
-    res.end(serverError);
+    res.writeHead(500, contType);
+    res.end(setError(serverError));
   }
 };
 
