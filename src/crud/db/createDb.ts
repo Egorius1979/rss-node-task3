@@ -2,7 +2,11 @@ import { writeFile } from 'fs/promises';
 import { join } from 'path';
 // import { access } from 'fs/promises';
 
-export const dbPath = join(process.cwd(), '/src/crud/db', 'users.json');
+export const dbPath = join(
+  process.cwd(),
+  process.env.NODE_ENV !== 'production' ? './src/crud/db' : './dist/crud/db',
+  'users.json'
+);
 
 export const createDb = async () => {
   await writeFile(dbPath, '[]');

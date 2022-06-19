@@ -12,8 +12,6 @@ export const serverError = 'sorry, server error';
 
 createDb();
 
-const PORT = process.env.PORT || 8090;
-
 export const server = createServer((req, res) => {
   const urlArr = req.url.split('/');
   const isValidEndpoint = urlArr[1] === 'api' && urlArr[2] === 'users';
@@ -36,6 +34,6 @@ export const server = createServer((req, res) => {
   }
 });
 
-// if (process.env.NODE_ENV !== 'test') {
+const PORT = process.env.PORT || 8090;
+
 server.listen(PORT, () => console.log(`server running on ${PORT}`));
-// }
