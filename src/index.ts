@@ -12,8 +12,6 @@ import { cpus } from 'os';
 export const contType = { 'Content-Type': 'application/json' };
 export const serverError = 'sorry, server error';
 
-createDb();
-
 export const server = createServer((req, res) => {
   const urlArr = req.url.split('/');
   const isValidEndpoint = urlArr[1] === 'api' && urlArr[2] === 'users';
@@ -39,6 +37,7 @@ export const server = createServer((req, res) => {
 const PORT = process.env.PORT || 8090;
 
 if (process.env.NODE_ENV !== 'cluster') {
+  createDb();
   server.listen(PORT, () => console.log(`server running on ${PORT}`));
 } else if (cluster.isPrimary) {
   createDb();
@@ -46,14 +45,10 @@ if (process.env.NODE_ENV !== 'cluster') {
   cpus().forEach(() => cluster.fork());
 
   console.log(`Primary ${process.pid} is running`);
-
-  cluster.on('exit', (worker, code, signal) => {
+  cluster.on('exit', (worker) => {
     console.log(`worker ${worker.process.pid} died`);
   });
 } else {
-  // Workers can share any TCP connection
-  // In this case it is an HTTP server
-
   console.log(`Worker ${process.pid} started`);
   server.listen(PORT);
 }

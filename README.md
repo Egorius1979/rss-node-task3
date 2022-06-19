@@ -52,6 +52,12 @@ to create an object, use `json`(all properties are required):
 - "age": `number`,
 - "hobbies": `string`[] or []
 
+## Database
+
+The **database** is located (created if it does not already exist) at _*src/crud/db/users.json*_ (when running `"start:dev"`) or at _*dist/crud/db/users.json*_ (when running `"start:prod"`).
+
+The database is reset at each next startup
+
 ## Testing
 
 Implemented 3 test scenarios for the API:
