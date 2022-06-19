@@ -128,7 +128,6 @@ describe('Second test (error handling)', () => {
 
 describe('Third test ', () => {
   let firstUser: IUser, secondUser: IUser;
-  let userFirstId: string, userSecondId: string;
 
   it('Should create user', async () => {
     const res1 = await request(server)
@@ -193,3 +192,5 @@ describe('Third test ', () => {
     expect(first.id).not.toBe(second.id);
   });
 });
+
+server.close();
