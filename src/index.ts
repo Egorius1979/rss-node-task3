@@ -6,6 +6,8 @@ import updateUser from './crud/update';
 import deleteUser from './crud/delete';
 import { createDb } from './crud/db/createDb';
 import { setError } from './crud/utils/response';
+import cluster from 'cluster';
+import { cpus } from 'os';
 
 export const contType = { 'Content-Type': 'application/json' };
 export const serverError = 'sorry, server error';
@@ -36,4 +38,22 @@ export const server = createServer((req, res) => {
 
 const PORT = process.env.PORT || 8090;
 
-server.listen(PORT, () => console.log(`server running on ${PORT}`));
+if (process.env.NODE_ENV !== 'cluster') {
+  server.listen(PORT, () => console.log(`server running on ${PORT}`));
+} else if (cluster.isPrimary) {
+  createDb();
+
+  cpus().forEach(() => cluster.fork());
+
+  console.log(`Primary ${process.pid} is running`);
+
+  cluster.on('exit', (worker, code, signal) => {
+    console.log(`worker ${worker.process.pid} died`);
+  });
+} else {
+  // Workers can share any TCP connection
+  // In this case it is an HTTP server
+
+  console.log(`Worker ${process.pid} started`);
+  server.listen(PORT);
+}
